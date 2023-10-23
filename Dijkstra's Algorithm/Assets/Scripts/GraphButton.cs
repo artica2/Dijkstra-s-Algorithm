@@ -16,7 +16,6 @@ public class GraphButton : MonoBehaviour
             GraphBuilder.instance.buttonOne = this;
         } else
         {
-            Debug.Log("I AM HERE!!!!");
             GraphBuilder.instance.isDragging = false;
             GraphBuilder.instance.buttonTwo = this;
         }
@@ -28,7 +27,7 @@ public class GraphButton : MonoBehaviour
         newNode.nodeName = Convert.ToChar(GraphBuilder.instance.numberOfNodes).ToString();
         if(GraphBuilder.instance.numberOfNodes == 65) // this is the first node
         {
-            GraphBuilder.instance.startNode = node;
+            GraphBuilder.instance.startNode = newNode;
         }
         GraphBuilder.instance.numberOfNodes++;
         newNode.minimumCost = 400;

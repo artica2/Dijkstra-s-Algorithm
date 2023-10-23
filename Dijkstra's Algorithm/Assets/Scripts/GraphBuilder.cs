@@ -56,7 +56,7 @@ public class GraphBuilder : MonoBehaviour
 
         LineBeingDrawn = Instantiate(LinePrefab);
         LineBeingDrawn.Initialize();
-        LineBeingDrawn.DrawLine(Vector3.zero, Vector3.zero);
+        LineBeingDrawn.DrawLine(Vector3.zero, Vector3.zero, false);
         LineBeingDrawn.transform.SetParent(canvas.transform);
     }
 
@@ -74,11 +74,14 @@ public class GraphBuilder : MonoBehaviour
     {
         GraphNode nodeOne = objOne.node;
         GraphNode nodeTwo = objTwo.node;
-        nodeOne.reachableNodes.Add(nodeTwo, Random.Range(1,5) * 10);
-        nodeTwo.reachableNodes.Add(nodeOne, Random.Range(1, 5) * 10);
-        LineBetweenObjects newLine = new LineBetweenObjects();
-        newLine.DrawLine(objOne.transform.position, objTwo.transform.position);
-        Debug.Log("Connection aquired");
+        int speed = Random.Range(1, 5) * 10;
+        nodeOne.reachableNodes.Add(nodeTwo, speed);
+        nodeTwo.reachableNodes.Add(nodeOne, speed);
+        LineBetweenObjects newLine = Instantiate(LinePrefab);
+        newLine.Initialize();
+        newLine.DrawLine(objOne.transform.position, objTwo.transform.position, false, speed.ToString());
+        newLine.transform.SetParent(canvas.transform);
+
     }
 
     private void deleteGraph()
@@ -88,7 +91,8 @@ public class GraphBuilder : MonoBehaviour
 
     void Update()
     {
-        LineBeingDrawn.DrawLine(Vector3.zero, Vector3.zero);
+
+        LineBeingDrawn.DrawLine(Vector3.zero, Vector3.zero, false);
         if (isDragging && buttonOne != null)
         {            
             Vector3 ButtonPos = buttonOne.transform.position;
@@ -96,11 +100,11 @@ public class GraphBuilder : MonoBehaviour
             Vector3 screenCenter = new Vector3(Screen.width / 2, Screen.height / 2, 0);
             Vector3 MousePos = Input.mousePosition;
             Vector3 offsetMouse = MousePos - screenCenter;
-            LineBeingDrawn.DrawLine(ButtonPos, MousePos);
+            LineBeingDrawn.DrawLine(ButtonPos, MousePos, true);
         }
         if (buttonTwo != null)
         {
-            connectNodes(buttonOne, buttonTwo);
+            connectNodes(buttonOne, buttonTwo); // why does it do this twice?????
             buttonOne = null;
             buttonTwo = null;
             positionOfDrag = null;
