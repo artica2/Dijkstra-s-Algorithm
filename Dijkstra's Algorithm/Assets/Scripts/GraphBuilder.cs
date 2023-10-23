@@ -24,9 +24,9 @@ public class GraphBuilder : MonoBehaviour
     public List<LineBetweenObjects> LinesInGraph;
 
 
-    public List<GraphNode> nodes;
-    public List<GraphNode> visitedNodes;
-    public List<GraphNode> unvisitedNodes;
+    public List<GraphNode> nodes = new List<GraphNode>();
+    public List<GraphNode> visitedNodes = new List<GraphNode>();
+    public List<GraphNode> unvisitedNodes = new List<GraphNode>();
     public int numberOfNodes = 65; //65 is the ASCII for A
 
     public GraphNode currentNode;
@@ -67,6 +67,8 @@ public class GraphBuilder : MonoBehaviour
         button.Intitialize();
         Text buttonText = button.GetComponentInChildren<Text>();
         buttonText.text = button.node.nodeName;
+        nodes.Add(button.node);
+        visitedNodes.Add(button.node);
         ButtonGo.transform.SetParent(canvas.transform);
     }
 
