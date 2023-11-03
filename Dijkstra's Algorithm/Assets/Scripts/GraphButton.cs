@@ -29,6 +29,7 @@ public class GraphButton : MonoBehaviour
         {
             Debug.Log("START NODE GETS SET");
             GraphBuilder.instance.startNode = newNode;
+            GraphBuilder.instance.currentNode = newNode;
             newNode.minimumCost = 0;
             newNode.prevNode = newNode;
         } else
