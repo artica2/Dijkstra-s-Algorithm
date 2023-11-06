@@ -25,6 +25,7 @@ public class GraphButton : MonoBehaviour
     {
         GraphNode newNode = new GraphNode();
         newNode.nodeName = Convert.ToChar(GraphBuilder.instance.numberOfNodes).ToString();
+        newNode.hasBeenVisited = false;
         if(GraphBuilder.instance.numberOfNodes == 65) // this is the first node
         {
             Debug.Log("START NODE GETS SET");
@@ -36,9 +37,8 @@ public class GraphButton : MonoBehaviour
         {
             newNode.minimumCost = 1000000;
         }
-        GraphBuilder.instance.numberOfNodes++;
-        
+        GraphBuilder.instance.numberOfNodes++;        
         node = newNode;
-        
+        node.nodeButton = gameObject;
     }
 }
