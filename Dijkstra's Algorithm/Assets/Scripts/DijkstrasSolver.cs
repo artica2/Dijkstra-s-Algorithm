@@ -152,10 +152,6 @@ public class DijkstrasSolver : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (GraphBuilder.instance.startNode != null)
-        {
-            Debug.Log("Start Node exists");
-        }
         if (inSolvingPhase)
         {
             DoDijkstras();
@@ -284,9 +280,12 @@ public class DijkstrasSolver : MonoBehaviour
         float trackerFloat = 100000000f;
         foreach(KeyValuePair<GraphNode, float> node in currentNode.reachableNodes)
         {
-            if(node.Key.minimumCost < trackerFloat)
+            if (!node.Key.hasBeenVisited)
             {
-                graph.currentNode = node.Key;
+                if (node.Key.minimumCost < trackerFloat)
+                {
+                    graph.currentNode = node.Key;
+                }
             }
         }
         Image currentButtonImage = graph.currentNode.nodeButton.GetComponent<Image>();
