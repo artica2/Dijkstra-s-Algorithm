@@ -29,9 +29,9 @@ public class GraphBuilder : MonoBehaviour
     public List<GraphNode> unvisitedNodes = new List<GraphNode>();
     public int numberOfNodes = 65; //65 is the ASCII for A
 
-    public GraphNode currentNode;
-
     public GraphNode startNode; // root node
+    public GraphNode currentNode;
+    public GraphNode endNode;
 
     private void Awake()
     {

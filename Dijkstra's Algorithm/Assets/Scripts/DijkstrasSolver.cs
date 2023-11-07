@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
@@ -31,6 +32,8 @@ public class DijkstrasSolver : MonoBehaviour
 
     private List<GameObject> clipBoard = new List<GameObject>();
 
+    public Text endGameText;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -42,6 +45,7 @@ public class DijkstrasSolver : MonoBehaviour
         dijkstrasRuleThree.color = Color.red;
         inSolvingPhase = false;
         dijkstrasRuleCounter = 3;
+        endGameText.text = " ";
     }
 
     public void BuildTable()
@@ -51,6 +55,11 @@ public class DijkstrasSolver : MonoBehaviour
         dijkstrasRuleOne.text = "Work out the cost to get to all the unvisited nodes connected to our current node";
         dijkstrasRuleTwo.text = "Compare if any of these routes get us to our unvisited nodes in less time than we previously thought possible";
         dijkstrasRuleThree.text = "Mark our previous node as visited, and work out the shortest journey time to any of our unvisited nodes, and go there";
+
+        Image endButtonImage = GraphBuilder.instance.endNode.nodeButton.GetComponent<Image>();
+        Image startButtonImage = GraphBuilder.instance.startNode.nodeButton.GetComponent<Image>();
+        endButtonImage.color = Color.red;
+        startButtonImage.color = Color.green;
 
         // make the top row
         Vector3 startPos = spawner.transform.position;
@@ -215,6 +224,15 @@ public class DijkstrasSolver : MonoBehaviour
         Image currentButtonImage = graph.currentNode.nodeButton.GetComponent<Image>();
         currentButtonImage.color = Color.green;
 
+        foreach(GraphNode node in graph.nodes)
+        {
+            Image image = node.nodeButton.GetComponent<Image>();
+            if (image.color == Color.cyan)
+            {
+                image.color = Color.white;
+            }
+        }
+
         foreach (KeyValuePair<GraphNode, float> reachableNode in graph.currentNode.reachableNodes)
         {
             if (!reachableNode.Key.hasBeenVisited)
@@ -260,16 +278,23 @@ public class DijkstrasSolver : MonoBehaviour
                 if (distance < reachableNode.Key.minimumCost)
                 {
                     reachableNode.Key.minimumCost = distance;
+                    reachableNode.Key.prevNode = graph.currentNode;
                 }
                 RewriteTable();
             }
         }
     }
 
+    // mark our previous node as visited, and work out the shortest journey time to any of our unvisited nodes.
     private void RuleThree()
     {
         // Reset rule two
         dijkstrasRuleTwo.color = Color.red;
+        foreach (GameObject go in clipBoard)
+        {
+            Destroy(go);
+        }
+        clipBoard.Clear();
         // Excecute rule three
         dijkstrasRuleThree.color = Color.green;
         GraphBuilder graph = GraphBuilder.instance;
@@ -278,18 +303,48 @@ public class DijkstrasSolver : MonoBehaviour
         currentNode.hasBeenVisited = true;
         buttonImage.color = Color.grey;
         float trackerFloat = 100000000f;
-        foreach(KeyValuePair<GraphNode, float> node in currentNode.reachableNodes)
+        foreach(GraphNode node in graph.nodes)
         {
-            if (!node.Key.hasBeenVisited)
+            if (!node.hasBeenVisited)
             {
-                if (node.Key.minimumCost < trackerFloat)
+                if (node.minimumCost < trackerFloat)
                 {
-                    graph.currentNode = node.Key;
+                    graph.currentNode = node;
+                    trackerFloat = node.minimumCost;
                 }
             }
         }
         Image currentButtonImage = graph.currentNode.nodeButton.GetComponent<Image>();
         currentButtonImage.color = Color.green;
+        if(graph.currentNode == graph.endNode)
+        {
+            EndSim();
+        }
+    }
 
+    void EndSim()
+    {
+        float minDistanceTracker = 0f;
+        string journeyString = "";
+        GraphBuilder Graph = GraphBuilder.instance;
+        GraphNode examinedNode = Graph.endNode;
+        GraphNode prevNode = Graph.currentNode;
+        GraphNode endNode = Graph.endNode;
+
+        while (examinedNode != Graph.startNode)
+        {
+            prevNode = examinedNode.prevNode;
+            minDistanceTracker += prevNode.reachableNodes[examinedNode];
+            journeyString += examinedNode.nodeName + " ";
+            examinedNode = prevNode;
+        }
+        journeyString += "A";
+
+        char[] charArray = journeyString.ToCharArray();
+        Array.Reverse(charArray);
+        string reversedJourney = new string(charArray);
+        
+        string printString = "You've made it to the final node! Your fastest journey is: " + reversedJourney + " and the minimum cost is: " + minDistanceTracker;
+        endGameText.text = printString;
     }
 }

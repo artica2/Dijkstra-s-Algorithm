@@ -37,7 +37,8 @@ public class GraphButton : MonoBehaviour
         {
             newNode.minimumCost = 1000000;
         }
-        GraphBuilder.instance.numberOfNodes++;        
+        GraphBuilder.instance.numberOfNodes++;    
+        GraphBuilder.instance.endNode = newNode;
         node = newNode;
         node.nodeButton = gameObject;
     }
