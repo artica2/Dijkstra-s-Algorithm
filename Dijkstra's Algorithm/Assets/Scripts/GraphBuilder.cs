@@ -5,11 +5,14 @@ using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
+using UnityEngine.XR;
 
 public class GraphBuilder : MonoBehaviour
 {
     public static GraphBuilder instance;
     public bool isDragging;
+    public bool isMovingButton;
+    public GameObject ButtonBeingMoved;
     public Transform positionOfDrag;
     public GraphButton buttonOne;
     public GraphButton buttonTwo;
@@ -33,6 +36,13 @@ public class GraphBuilder : MonoBehaviour
     public GraphNode currentNode;
     public GraphNode endNode;
 
+    public InputField speedInput;
+    public int speedInt;
+
+    GraphButton node1;
+    GraphButton node2;
+
+
     private void Awake()
     {
         // If there is an instance, and it's not me, delete myself.
@@ -46,6 +56,8 @@ public class GraphBuilder : MonoBehaviour
         }
 
         Initialize();
+        speedInput.onEndEdit.AddListener(OnInputEndEdit);
+        speedInput.gameObject.SetActive(false);
 
     }
 
@@ -58,6 +70,25 @@ public class GraphBuilder : MonoBehaviour
         LineBeingDrawn.Initialize();
         LineBeingDrawn.DrawLine(Vector3.zero, Vector3.zero, false);
         LineBeingDrawn.transform.SetParent(canvas.transform);
+    }
+
+    void OnInputEndEdit(string value)
+    {
+        Debug.Log("CALLS THIS!");
+        if (int.TryParse(value, out int result))
+        {
+            // Input is a valid integer
+            Debug.Log("Input is an integer: " + result);
+
+            // Perform actions with the integer as needed
+            speedInt = result;
+            LineBetweenObjects newLine = Instantiate(LinePrefab);
+            newLine.Initialize();
+            newLine.DrawLine(node1.transform.position, node2.transform.position, false, speedInt.ToString());
+            newLine.transform.SetParent(canvas.transform);
+            // Disable the input field
+            speedInput.gameObject.SetActive(false);
+        }
     }
 
     private void addNode()
@@ -74,15 +105,18 @@ public class GraphBuilder : MonoBehaviour
 
     private void connectNodes(GraphButton objOne, GraphButton objTwo)
     {
-        GraphNode nodeOne = objOne.node;
-        GraphNode nodeTwo = objTwo.node;
-        int speed = Random.Range(1, 5) * 10;
-        nodeOne.reachableNodes.Add(nodeTwo, speed);
-        nodeTwo.reachableNodes.Add(nodeOne, speed);
-        LineBetweenObjects newLine = Instantiate(LinePrefab);
-        newLine.Initialize();
-        newLine.DrawLine(objOne.transform.position, objTwo.transform.position, false, speed.ToString());
-        newLine.transform.SetParent(canvas.transform);
+        node1 = objOne;
+        node2 = objTwo;
+        speedInput.gameObject.SetActive(true);
+
+
+        //int speed = Random.Range(1, 5) * 10;
+        //nodeOne.reachableNodes.Add(nodeTwo, speed);
+        //nodeTwo.reachableNodes.Add(nodeOne, speed);
+        //LineBetweenObjects newLine = Instantiate(LinePrefab);
+        //newLine.Initialize();
+        //newLine.DrawLine(objOne.transform.position, objTwo.transform.position, false, speed.ToString());
+        //newLine.transform.SetParent(canvas.transform);
 
     }
 
@@ -106,14 +140,32 @@ public class GraphBuilder : MonoBehaviour
         }
         if (buttonTwo != null)
         {
-            connectNodes(buttonOne, buttonTwo); // why does it do this twice?????
+            connectNodes(buttonOne, buttonTwo);
+            speedInput.enabled = true;
             buttonOne = null;
             buttonTwo = null;
             positionOfDrag = null;
         }
 
+
         if(Input.GetMouseButtonDown(1)) {
-            addNode();
+            Vector3 mousePosition = Input.mousePosition;
+            float whereInScreen = mousePosition.x / Screen.width;
+
+            if (whereInScreen > 0.15 && whereInScreen < 0.85)
+            {
+                addNode();
+            }
+        }
+
+        if (isMovingButton)
+        {
+            ButtonBeingMoved.transform.position = Input.mousePosition;
+            if (!Input.GetKey(KeyCode.LeftControl))
+            {
+                isMovingButton = false;
+            }
         }
     }
+
 }

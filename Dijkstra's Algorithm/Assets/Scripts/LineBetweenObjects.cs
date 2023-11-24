@@ -49,6 +49,7 @@ public class LineBetweenObjects : MonoBehaviour
             // Set the text content
             text.text = annotationText;
             text.font = Font.CreateDynamicFontFromOSFont("Arial", 16);
+            text.color = new Color(1, 0, 1, 1);
         }
     }
 

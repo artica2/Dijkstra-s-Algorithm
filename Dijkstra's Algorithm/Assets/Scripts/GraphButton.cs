@@ -9,15 +9,34 @@ public class GraphButton : MonoBehaviour
     public GraphNode node;
     public void OnClick()
     {
-        if (GraphBuilder.instance.isDragging == false) // if we're not currently dragging we want to begin dragging
+
+
+        if (Input.GetKey(KeyCode.LeftControl))
         {
-            GraphBuilder.instance.isDragging = true;
-            GraphBuilder.instance.positionOfDrag = gameObject.transform;
-            GraphBuilder.instance.buttonOne = this;
-        } else
+            if (!GraphBuilder.instance.isMovingButton)
+            {
+                GraphBuilder.instance.isMovingButton = true;
+                GraphBuilder.instance.ButtonBeingMoved = gameObject;
+            } else
+            {
+                GraphBuilder.instance.isMovingButton = false;
+                return;
+            }
+        } 
+        else if (!GraphBuilder.instance.isMovingButton)
         {
-            GraphBuilder.instance.isDragging = false;
-            GraphBuilder.instance.buttonTwo = this;
+            {
+                if (GraphBuilder.instance.isDragging == false) // if we're not currently dragging we want to begin dragging
+                {
+                    GraphBuilder.instance.isDragging = true;
+                    GraphBuilder.instance.positionOfDrag = gameObject.transform;
+                    GraphBuilder.instance.buttonOne = this;
+                } else
+                {
+                    GraphBuilder.instance.isDragging = false;
+                    GraphBuilder.instance.buttonTwo = this;
+                }
+            }
         }
     }
 

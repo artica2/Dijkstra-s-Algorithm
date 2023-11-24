@@ -34,6 +34,8 @@ public class DijkstrasSolver : MonoBehaviour
 
     public Text endGameText;
 
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -46,6 +48,8 @@ public class DijkstrasSolver : MonoBehaviour
         inSolvingPhase = false;
         dijkstrasRuleCounter = 3;
         endGameText.text = " ";
+
+
     }
 
     public void BuildTable()
