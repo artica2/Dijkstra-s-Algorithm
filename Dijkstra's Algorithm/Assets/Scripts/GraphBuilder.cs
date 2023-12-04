@@ -17,6 +17,10 @@ public class GraphBuilder : MonoBehaviour
     public GraphButton buttonOne;
     public GraphButton buttonTwo;
 
+    public Sprite road;
+
+    public GameObject panel;
+
     public GameObject buttonPrefab;
 
     public GameObject canvas;
@@ -58,6 +62,7 @@ public class GraphBuilder : MonoBehaviour
         Initialize();
         speedInput.onEndEdit.AddListener(OnInputEndEdit);
         speedInput.gameObject.SetActive(false);
+        panel.SetActive(false);
 
     }
 
@@ -86,8 +91,15 @@ public class GraphBuilder : MonoBehaviour
             newLine.Initialize();
             newLine.DrawLine(node1.transform.position, node2.transform.position, false, speedInt.ToString());
             newLine.transform.SetParent(canvas.transform);
+            GraphNode butt1 = node1.GetComponent<GraphButton>().node;
+            
+            GraphNode butt2 = node2.GetComponent<GraphButton>().node;
+            butt1.reachableNodes.Add(butt2, speedInt);
+            butt2.reachableNodes.Add(butt1, speedInt);
             // Disable the input field
             speedInput.gameObject.SetActive(false);
+
+            panel.SetActive(false);
         }
     }
 
@@ -107,11 +119,11 @@ public class GraphBuilder : MonoBehaviour
     {
         node1 = objOne;
         node2 = objTwo;
+        panel.SetActive(true);
         speedInput.gameObject.SetActive(true);
 
 
         //int speed = Random.Range(1, 5) * 10;
-        //nodeOne.reachableNodes.Add(nodeTwo, speed);
         //nodeTwo.reachableNodes.Add(nodeOne, speed);
         //LineBetweenObjects newLine = Instantiate(LinePrefab);
         //newLine.Initialize();

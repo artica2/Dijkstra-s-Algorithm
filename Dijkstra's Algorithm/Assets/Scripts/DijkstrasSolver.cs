@@ -26,6 +26,17 @@ public class DijkstrasSolver : MonoBehaviour
     private string middleString;
     private string rightString;
 
+    [SerializeField]
+    Sprite SLWhite;
+    [SerializeField]
+    Sprite SLRed;
+    [SerializeField]
+    Sprite SLGrey;
+    [SerializeField]
+    Sprite SLGreen;
+    [SerializeField]
+    Sprite SLBlue;
+
     private List<GraphNode> nodesUnderInspection = new List<GraphNode>();
 
     private List<GameObject> tableHolder = new List<GameObject>();
@@ -49,7 +60,6 @@ public class DijkstrasSolver : MonoBehaviour
         dijkstrasRuleCounter = 3;
         endGameText.text = " ";
 
-
     }
 
     public void BuildTable()
@@ -62,8 +72,9 @@ public class DijkstrasSolver : MonoBehaviour
 
         Image endButtonImage = GraphBuilder.instance.endNode.nodeButton.GetComponent<Image>();
         Image startButtonImage = GraphBuilder.instance.startNode.nodeButton.GetComponent<Image>();
-        endButtonImage.color = Color.red;
-        startButtonImage.color = Color.green;
+        // endButtonImage.color = Color.red;
+        endButtonImage.sprite = SLRed;
+        startButtonImage.sprite = SLGreen;
 
         // make the top row
         Vector3 startPos = spawner.transform.position;
@@ -226,14 +237,14 @@ public class DijkstrasSolver : MonoBehaviour
         dijkstrasRuleOne.color = Color.green;
         GraphBuilder graph = GraphBuilder.instance;
         Image currentButtonImage = graph.currentNode.nodeButton.GetComponent<Image>();
-        currentButtonImage.color = Color.green;
+        currentButtonImage.sprite = SLGreen;
 
         foreach(GraphNode node in graph.nodes)
         {
             Image image = node.nodeButton.GetComponent<Image>();
-            if (image.color == Color.cyan)
+            if (image.sprite == SLBlue)
             {
-                image.color = Color.white;
+                image.sprite = SLWhite;
             }
         }
 
@@ -242,7 +253,7 @@ public class DijkstrasSolver : MonoBehaviour
             if (!reachableNode.Key.hasBeenVisited)
             {
                 Image buttonImage = reachableNode.Key.nodeButton.GetComponent<Image>();
-                buttonImage.color = Color.cyan;
+                buttonImage.sprite = SLGreen;
                 GameObject annotationObject = new GameObject("Annotation");
                 annotationObject.transform.position = reachableNode.Key.nodeButton.transform.position + new Vector3(0f, 10f, 0f);
                 annotationObject.transform.SetParent(reachableNode.Key.nodeButton.transform); // Make it a child of the same parent as your line object
@@ -274,7 +285,7 @@ public class DijkstrasSolver : MonoBehaviour
             if (!reachableNode.Key.hasBeenVisited)
             {
                 Image buttonImage = reachableNode.Key.nodeButton.GetComponent<Image>();
-                buttonImage.color = Color.cyan;
+                buttonImage.sprite = SLBlue;
                 GameObject annotationObject = new GameObject("Annotation");
                 annotationObject.transform.position = reachableNode.Key.nodeButton.transform.position + new Vector3(0f, 10f, 0f);
                 annotationObject.transform.SetParent(reachableNode.Key.nodeButton.transform); // Make it a child of the same parent as your line object
@@ -305,7 +316,7 @@ public class DijkstrasSolver : MonoBehaviour
         GraphNode currentNode = graph.currentNode;
         Image buttonImage = currentNode.nodeButton.GetComponent<Image>();
         currentNode.hasBeenVisited = true;
-        buttonImage.color = Color.grey;
+        buttonImage.sprite = SLGrey;
         float trackerFloat = 100000000f;
         foreach(GraphNode node in graph.nodes)
         {
@@ -319,7 +330,7 @@ public class DijkstrasSolver : MonoBehaviour
             }
         }
         Image currentButtonImage = graph.currentNode.nodeButton.GetComponent<Image>();
-        currentButtonImage.color = Color.green;
+        currentButtonImage.sprite = SLGreen;
         if(graph.currentNode == graph.endNode)
         {
             EndSim();

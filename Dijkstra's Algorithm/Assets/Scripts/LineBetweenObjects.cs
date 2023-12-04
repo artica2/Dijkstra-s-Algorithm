@@ -8,11 +8,22 @@ public class LineBetweenObjects : MonoBehaviour
 {
     private Image image;
     private RectTransform rectTransform;
+    Sprite roadSprite;
+    
+    private float length = 1f;
+
     // Start is called before the first frame update
     public void Initialize()
     {
         image = GetComponent<Image>();
         rectTransform = GetComponent<RectTransform>();
+        GraphBuilder Graph = GraphBuilder.instance;
+        roadSprite = Graph.road;
+        SpriteRenderer spriteRend = new SpriteRenderer();
+        spriteRend.sprite = roadSprite;
+        spriteRend.size = new Vector2(1, length);
+        image.sprite = roadSprite;
+        
     }
 
     public void DrawLine(Vector3 pos1, Vector3 pos2, bool needsToRecalibrate, string annotationText = null) // some UI components go from bottom left, some go from middle
@@ -30,7 +41,7 @@ public class LineBetweenObjects : MonoBehaviour
         {
             rectPos = (pos1Copy + pos2Copy) / 2;
         }
-        rectTransform.sizeDelta = new Vector3(dif.magnitude - 50f, 5);
+        rectTransform.sizeDelta = new Vector3(dif.magnitude - 120f, 20);
         rectTransform.localPosition = rectPos;        
         
         if(dif.x != 0)
@@ -49,6 +60,7 @@ public class LineBetweenObjects : MonoBehaviour
             // Set the text content
             text.text = annotationText;
             text.font = Font.CreateDynamicFontFromOSFont("Arial", 16);
+            text.fontSize = 30;
             text.color = new Color(1, 0, 1, 1);
         }
     }
