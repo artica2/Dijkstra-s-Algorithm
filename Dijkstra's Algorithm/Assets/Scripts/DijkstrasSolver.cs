@@ -141,7 +141,7 @@ public class DijkstrasSolver : MonoBehaviour
             GraphNode node = GraphBuilder.instance.nodes[i];
             GameObject button = node.nodeButton;
             Image buttonImage = button.GetComponent<Image>();
-            if(buttonImage.color == Color.cyan)
+            if(buttonImage.sprite == SLBlue)
             {
                 isUnderInspection = true;
             } else
@@ -189,7 +189,7 @@ public class DijkstrasSolver : MonoBehaviour
         {
             if (isBlue)
             {
-                textComponent.color = Color.blue;
+                textComponent.color = Color.cyan;
             }
             if (textComponent.name == "Left text")
             {

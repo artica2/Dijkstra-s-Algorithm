@@ -19,9 +19,9 @@ public class LineBetweenObjects : MonoBehaviour
         rectTransform = GetComponent<RectTransform>();
         GraphBuilder Graph = GraphBuilder.instance;
         roadSprite = Graph.road;
-        SpriteRenderer spriteRend = new SpriteRenderer();
-        spriteRend.sprite = roadSprite;
-        spriteRend.size = new Vector2(1, length);
+        // SpriteRenderer spriteRend = image.GetComponent<SpriteRenderer>();
+        // spriteRend.sprite = roadSprite;
+        // spriteRend.size = new Vector2(1, length);
         image.sprite = roadSprite;
         
     }
@@ -41,7 +41,8 @@ public class LineBetweenObjects : MonoBehaviour
         {
             rectPos = (pos1Copy + pos2Copy) / 2;
         }
-        rectTransform.sizeDelta = new Vector3(dif.magnitude - 120f, 20);
+        rectTransform.sizeDelta = new Vector3(dif.magnitude - 120f, 100
+);
         rectTransform.localPosition = rectPos;        
         
         if(dif.x != 0)
@@ -53,8 +54,8 @@ public class LineBetweenObjects : MonoBehaviour
         {
             GameObject annotationObject = new GameObject("Annotation");
             annotationObject.transform.position = rectTransform.position;
-            annotationObject.transform.SetParent(transform); // Make it a child of the same parent as your line object
-            
+            annotationObject.transform.position = rectPos; // Make it a child of the same parent as your line object
+            annotationObject.transform.SetParent(GraphBuilder.instance.canvas.transform);
             // Create a Text component
             Text text = annotationObject.AddComponent<Text>();
             // Set the text content
