@@ -10,15 +10,17 @@ using UnityEngine.XR;
 public class GraphBuilder : MonoBehaviour
 {
     public static GraphBuilder instance;
-    public bool isDragging;
-    public bool isMovingButton;
+
     public GameObject ButtonBeingMoved;
     public Transform positionOfDrag;
     public GraphButton buttonOne;
     public GraphButton buttonTwo;
 
-    public Sprite road;
+    public GameObject TextHolder;
 
+    public Sprite road;
+    public bool isDragging;
+    public bool isMovingButton;
     public GameObject panel;
 
     public GameObject buttonPrefab;
@@ -28,17 +30,16 @@ public class GraphBuilder : MonoBehaviour
 
     public LineBetweenObjects LinePrefab;
     public LineBetweenObjects LineBeingDrawn;
-    public List<LineBetweenObjects> LinesInGraph;
 
 
     public List<GraphNode> nodes = new List<GraphNode>();
     public List<GraphNode> visitedNodes = new List<GraphNode>();
     public List<GraphNode> unvisitedNodes = new List<GraphNode>();
     public int numberOfNodes = 65; //65 is the ASCII for A
-
     public GraphNode startNode; // root node
     public GraphNode currentNode;
     public GraphNode endNode;
+    public List<LineBetweenObjects> LinesInGraph;
 
     public InputField speedInput;
     public int speedInt;

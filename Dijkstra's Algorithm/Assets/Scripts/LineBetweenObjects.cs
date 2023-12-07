@@ -9,7 +9,7 @@ public class LineBetweenObjects : MonoBehaviour
     private Image image;
     private RectTransform rectTransform;
     Sprite roadSprite;
-    
+
     private float length = 1f;
 
     // Start is called before the first frame update
@@ -19,9 +19,6 @@ public class LineBetweenObjects : MonoBehaviour
         rectTransform = GetComponent<RectTransform>();
         GraphBuilder Graph = GraphBuilder.instance;
         roadSprite = Graph.road;
-        // SpriteRenderer spriteRend = image.GetComponent<SpriteRenderer>();
-        // spriteRend.sprite = roadSprite;
-        // spriteRend.size = new Vector2(1, length);
         image.sprite = roadSprite;
         
     }
@@ -54,8 +51,7 @@ public class LineBetweenObjects : MonoBehaviour
         {
             GameObject annotationObject = new GameObject("Annotation");
             annotationObject.transform.position = rectTransform.position;
-            annotationObject.transform.position = rectPos; // Make it a child of the same parent as your line object
-            annotationObject.transform.SetParent(GraphBuilder.instance.canvas.transform);
+
             // Create a Text component
             Text text = annotationObject.AddComponent<Text>();
             // Set the text content
@@ -63,12 +59,17 @@ public class LineBetweenObjects : MonoBehaviour
             text.font = Font.CreateDynamicFontFromOSFont("Arial", 16);
             text.fontSize = 30;
             text.color = new Color(1, 0, 1, 1);
-        }
-    }
 
-        // Update is called once per frame
-        void Update()
-    {
-        
+            float ratio = (pos1.x - pos2.x) / (pos1.y - pos2.y);
+
+            Debug.Log("Ratio is: " + ratio);
+
+            annotationObject.transform.SetParent(GraphBuilder.instance.canvas.transform);
+
+            if (ratio > -1.5 && ratio < -0.5)
+            {
+                annotationObject.transform.position += new Vector3(70, 0, 0);
+            }
+        }
     }
 }
