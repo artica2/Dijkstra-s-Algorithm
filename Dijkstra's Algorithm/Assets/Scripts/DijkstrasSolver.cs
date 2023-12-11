@@ -45,6 +45,8 @@ public class DijkstrasSolver : MonoBehaviour
 
     public Text endGameText;
 
+    private Color LightGreen = new Color(0.52f, 1, 0.52f);
+    private Color LightRed = new Color(1, 0.48f, 0.48f);
 
 
     // Start is called before the first frame update
@@ -53,13 +55,14 @@ public class DijkstrasSolver : MonoBehaviour
         dijkstrasRuleOne.text = " ";
         dijkstrasRuleTwo.text = " ";
         dijkstrasRuleThree.text = " ";
-        dijkstrasRuleOne.color = Color.red;
-        dijkstrasRuleTwo.color = Color.red;
-        dijkstrasRuleThree.color = Color.red;
+        dijkstrasRuleOne.color = LightRed;
+        dijkstrasRuleTwo.color = LightRed;
+        dijkstrasRuleThree.color = LightRed;
         inSolvingPhase = false;
         dijkstrasRuleCounter = 3;
         endGameText.text = " ";
-
+        LightGreen = new Color(0.52f, 1, 0.52f);
+        LightRed = new Color(1, 0.48f, 0.48f);
     }
 
     public void BuildTable()
@@ -189,7 +192,10 @@ public class DijkstrasSolver : MonoBehaviour
         {
             if (isBlue)
             {
-                textComponent.color = Color.cyan;
+                textComponent.color = LightGreen;
+            } else
+            {
+                textComponent.color = LightRed;
             }
             if (textComponent.name == "Left text")
             {
@@ -232,15 +238,15 @@ public class DijkstrasSolver : MonoBehaviour
     private void RuleOne()
     {
         // Reset rule three
-        dijkstrasRuleThree.color = Color.red;
+        dijkstrasRuleThree.color = LightRed;
         // Excecute rule one
-        dijkstrasRuleOne.color = Color.green;
+        dijkstrasRuleOne.color = LightGreen;
         GraphBuilder graph = GraphBuilder.instance;
         Image currentButtonImage = graph.currentNode.nodeButton.GetComponent<Image>();
         currentButtonImage.sprite = SLGreen;
 
         foreach(GraphNode node in graph.nodes)
-        {
+        { // reset all the currently blue nodes
             Image image = node.nodeButton.GetComponent<Image>();
             if (image.sprite == SLBlue)
             {
@@ -248,14 +254,16 @@ public class DijkstrasSolver : MonoBehaviour
             }
         }
 
+        // iterate through each node
         foreach (KeyValuePair<GraphNode, float> reachableNode in graph.currentNode.reachableNodes)
         {
             if (!reachableNode.Key.hasBeenVisited)
             {
                 Image buttonImage = reachableNode.Key.nodeButton.GetComponent<Image>();
-                buttonImage.sprite = SLGreen;
+                buttonImage.sprite = SLBlue; // if we are examining it, make it blue
+                // display the cost to get to each of these connected nodes
                 GameObject annotationObject = new GameObject("Annotation");
-                annotationObject.transform.position = reachableNode.Key.nodeButton.transform.position + new Vector3(0f, 10f, 0f);
+                annotationObject.transform.position = reachableNode.Key.nodeButton.transform.position + new Vector3(0f, 30f, 0f);
                 annotationObject.transform.SetParent(reachableNode.Key.nodeButton.transform); // Make it a child of the same parent as your line object
                 float distance = graph.currentNode.minimumCost + reachableNode.Value;
                 clipBoard.Add(annotationObject);
@@ -267,6 +275,8 @@ public class DijkstrasSolver : MonoBehaviour
                 text.text = distance.ToString();
                 text.color = Color.cyan;
                 text.font = Font.CreateDynamicFontFromOSFont("Arial", 16);
+                text.fontSize = 24;
+                text.alignment = TextAnchor.UpperCenter;
             }
         }
 
@@ -276,21 +286,21 @@ public class DijkstrasSolver : MonoBehaviour
     private void RuleTwo()
     {
         // Reset rule one
-        dijkstrasRuleOne.color = Color.red;
+        dijkstrasRuleOne.color = LightRed;
         // Excecute rule two
         GraphBuilder graph = GraphBuilder.instance;
-        dijkstrasRuleTwo.color = Color.green;
-        foreach (KeyValuePair<GraphNode, float> reachableNode in graph.currentNode.reachableNodes)
+        dijkstrasRuleTwo.color = LightGreen;
+        foreach (KeyValuePair<GraphNode, float> reachableNode in graph.currentNode.reachableNodes) // iterate through the reachable nodes
         {
             if (!reachableNode.Key.hasBeenVisited)
             {
                 Image buttonImage = reachableNode.Key.nodeButton.GetComponent<Image>();
                 buttonImage.sprite = SLBlue;
                 GameObject annotationObject = new GameObject("Annotation");
-                annotationObject.transform.position = reachableNode.Key.nodeButton.transform.position + new Vector3(0f, 10f, 0f);
+                annotationObject.transform.position = reachableNode.Key.nodeButton.transform.position + new Vector3(0f, 50f, 0f);
                 annotationObject.transform.SetParent(reachableNode.Key.nodeButton.transform); // Make it a child of the same parent as your line object
                 float distance = graph.currentNode.minimumCost + reachableNode.Value;
-                if (distance < reachableNode.Key.minimumCost)
+                if (distance < reachableNode.Key.minimumCost) // if the new route is faster
                 {
                     reachableNode.Key.minimumCost = distance;
                     reachableNode.Key.prevNode = graph.currentNode;
@@ -304,14 +314,14 @@ public class DijkstrasSolver : MonoBehaviour
     private void RuleThree()
     {
         // Reset rule two
-        dijkstrasRuleTwo.color = Color.red;
-        foreach (GameObject go in clipBoard)
+        dijkstrasRuleTwo.color = LightRed;
+        foreach (GameObject go in clipBoard) // destroy all the placeholder text previously displayed
         {
             Destroy(go);
         }
         clipBoard.Clear();
         // Excecute rule three
-        dijkstrasRuleThree.color = Color.green;
+        dijkstrasRuleThree.color = LightGreen;
         GraphBuilder graph = GraphBuilder.instance;
         GraphNode currentNode = graph.currentNode;
         Image buttonImage = currentNode.nodeButton.GetComponent<Image>();
@@ -331,7 +341,7 @@ public class DijkstrasSolver : MonoBehaviour
         }
         Image currentButtonImage = graph.currentNode.nodeButton.GetComponent<Image>();
         currentButtonImage.sprite = SLGreen;
-        if(graph.currentNode == graph.endNode)
+        if(graph.currentNode == graph.endNode) // check to see if we have reached our destination
         {
             EndSim();
         }

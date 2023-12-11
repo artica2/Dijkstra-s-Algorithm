@@ -9,6 +9,16 @@ using UnityEngine.XR;
 
 public class GraphBuilder : MonoBehaviour
 {
+    public List<GraphNode> nodes = new List<GraphNode>();
+    public List<GraphNode> visitedNodes = new List<GraphNode>();
+    public List<GraphNode> unvisitedNodes = new List<GraphNode>();
+    public int numberOfNodes = 65; //65 is the ASCII for A
+    public GraphNode startNode; // root node
+    public GraphNode currentNode;
+    public GraphNode endNode;
+    public List<LineBetweenObjects> LinesInGraph;
+
+
     public static GraphBuilder instance;
 
     public GameObject ButtonBeingMoved;
@@ -32,14 +42,6 @@ public class GraphBuilder : MonoBehaviour
     public LineBetweenObjects LineBeingDrawn;
 
 
-    public List<GraphNode> nodes = new List<GraphNode>();
-    public List<GraphNode> visitedNodes = new List<GraphNode>();
-    public List<GraphNode> unvisitedNodes = new List<GraphNode>();
-    public int numberOfNodes = 65; //65 is the ASCII for A
-    public GraphNode startNode; // root node
-    public GraphNode currentNode;
-    public GraphNode endNode;
-    public List<LineBetweenObjects> LinesInGraph;
 
     public InputField speedInput;
     public int speedInt;
@@ -80,20 +82,16 @@ public class GraphBuilder : MonoBehaviour
 
     void OnInputEndEdit(string value)
     {
-        Debug.Log("CALLS THIS!");
-        if (int.TryParse(value, out int result))
-        {
-            // Input is a valid integer
-            Debug.Log("Input is an integer: " + result);
-
-            // Perform actions with the integer as needed
+        if (int.TryParse(value, out int result)) // if input is an integer
+        {       
             speedInt = result;
+            // drawn a line between the two nodes
             LineBetweenObjects newLine = Instantiate(LinePrefab);
             newLine.Initialize();
             newLine.DrawLine(node1.transform.position, node2.transform.position, false, speedInt.ToString());
             newLine.transform.SetParent(canvas.transform);
-            GraphNode butt1 = node1.GetComponent<GraphButton>().node;
-            
+            // update the data of the two connected nodes
+            GraphNode butt1 = node1.GetComponent<GraphButton>().node;          
             GraphNode butt2 = node2.GetComponent<GraphButton>().node;
             butt1.reachableNodes.Add(butt2, speedInt);
             butt2.reachableNodes.Add(butt1, speedInt);
@@ -123,35 +121,22 @@ public class GraphBuilder : MonoBehaviour
         panel.SetActive(true);
         speedInput.gameObject.SetActive(true);
 
-
-        //int speed = Random.Range(1, 5) * 10;
-        //nodeTwo.reachableNodes.Add(nodeOne, speed);
-        //LineBetweenObjects newLine = Instantiate(LinePrefab);
-        //newLine.Initialize();
-        //newLine.DrawLine(objOne.transform.position, objTwo.transform.position, false, speed.ToString());
-        //newLine.transform.SetParent(canvas.transform);
-
-    }
-
-    private void deleteGraph()
-    {
-
     }
 
     void Update()
     {
 
-        LineBeingDrawn.DrawLine(Vector3.zero, Vector3.zero, false);
+        LineBeingDrawn.DrawLine(Vector3.zero, Vector3.zero, false); // reset the line currently being drawn
         if (isDragging && buttonOne != null)
-        {            
+        {
+            // draw a line between the button thats been clicked on and the mouse each frame
             Vector3 ButtonPos = buttonOne.transform.position;
-            // RectTransform canvasRectTransform = canvas.GetComponent<RectTransform>();
             Vector3 screenCenter = new Vector3(Screen.width / 2, Screen.height / 2, 0);
             Vector3 MousePos = Input.mousePosition;
             Vector3 offsetMouse = MousePos - screenCenter;
             LineBeingDrawn.DrawLine(ButtonPos, MousePos, true);
         }
-        if (buttonTwo != null)
+        if (buttonTwo != null) // when a second node has been clicked on
         {
             connectNodes(buttonOne, buttonTwo);
             speedInput.enabled = true;
@@ -160,7 +145,7 @@ public class GraphBuilder : MonoBehaviour
             positionOfDrag = null;
         }
 
-
+        // if we right click, add another node
         if(Input.GetMouseButtonDown(1)) {
             Vector3 mousePosition = Input.mousePosition;
             float whereInScreen = mousePosition.x / Screen.width;
@@ -171,6 +156,7 @@ public class GraphBuilder : MonoBehaviour
             }
         }
 
+        // if we are moving a node
         if (isMovingButton)
         {
             ButtonBeingMoved.transform.position = Input.mousePosition;

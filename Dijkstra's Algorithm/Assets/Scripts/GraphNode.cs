@@ -15,7 +15,7 @@ public class GraphNode
     public string nodeName;
     public Dictionary<GraphNode, float> reachableNodes = new Dictionary<GraphNode, float>(); // dictionary with the reachable nodes and how long it takes to add them
     public float minimumCost = Mathf.Infinity; // min cost to get to the node
-    public GraphNode prevNode = null;
-    public GameObject nodeButton;
+    public GraphNode prevNode = null; // used to track the pathway suggested by Dijkstra
+    public GameObject nodeButton; // The In game Object representing the node
     public bool hasBeenVisited;
 }

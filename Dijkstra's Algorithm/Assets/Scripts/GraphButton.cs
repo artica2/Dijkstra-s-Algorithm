@@ -9,8 +9,7 @@ public class GraphButton : MonoBehaviour
     public GraphNode node;
     public void OnClick()
     {
-
-
+        // if left control is being held down, the user is trying to move the button
         if (Input.GetKey(KeyCode.LeftControl))
         {
             if (!GraphBuilder.instance.isMovingButton)
@@ -47,7 +46,6 @@ public class GraphButton : MonoBehaviour
         newNode.hasBeenVisited = false;
         if(GraphBuilder.instance.numberOfNodes == 65) // this is the first node
         {
-            Debug.Log("START NODE GETS SET");
             GraphBuilder.instance.startNode = newNode;
             GraphBuilder.instance.currentNode = newNode;
             newNode.minimumCost = 0;
@@ -57,7 +55,7 @@ public class GraphButton : MonoBehaviour
             newNode.minimumCost = 1000000;
         }
         GraphBuilder.instance.numberOfNodes++;    
-        GraphBuilder.instance.endNode = newNode;
+        GraphBuilder.instance.endNode = newNode; // endnode will be the last node placed
         node = newNode;
         node.nodeButton = gameObject;
     }
